@@ -6,12 +6,17 @@ local TabContainer = Instance.new("Frame")
 local ButtonNames = {"Player", "Misc", "Teleports", "Shop", "Aimlock"}
 local Tabs = {}
 
--- Player GUI Setup
+-- Setting up ScreenGui for local player
 ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+
+-- Theme Colors
+local backgroundColor = Color3.fromRGB(230, 200, 255) -- Light purple for the background
+local buttonColor = Color3.fromRGB(210, 180, 230)     -- Slightly darker purple for the buttons
+local textColor = Color3.fromRGB(90, 0, 120)          -- Dark purple for text to ensure readability
 
 -- Main Frame Setup
 MainFrame.Parent = ScreenGui
-MainFrame.BackgroundColor3 = Color3.new(0.1, 0.1, 0.1)
+MainFrame.BackgroundColor3 = backgroundColor
 MainFrame.Position = UDim2.new(0.35, 0, 0.35, 0)
 MainFrame.Size = UDim2.new(0.3, 0, 0.5, 0)
 MainFrame.Active = true
@@ -20,6 +25,7 @@ MainFrame.Draggable = true
 -- Close Button Setup
 CloseButton.Parent = MainFrame
 CloseButton.Text = "X"
+CloseButton.TextColor3 = textColor
 CloseButton.Size = UDim2.new(0.05, 0, 0.05, 0)
 CloseButton.Position = UDim2.new(0.95, 0, 0, 0)
 CloseButton.BackgroundColor3 = Color3.new(1, 0, 0)
@@ -30,7 +36,7 @@ end)
 
 -- Tab Container Setup
 TabContainer.Parent = MainFrame
-TabContainer.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
+TabContainer.BackgroundColor3 = buttonColor
 TabContainer.Size = UDim2.new(0.2, 0, 1, 0)
 TabContainer.Position = UDim2.new(0, 0, 0, 0)
 
@@ -39,9 +45,10 @@ for i, buttonName in ipairs(ButtonNames) do
     local TabButton = Instance.new("TextButton")
     TabButton.Parent = TabContainer
     TabButton.Text = buttonName
+    TabButton.TextColor3 = textColor
     TabButton.Size = UDim2.new(1, 0, 0.2, 0)
     TabButton.Position = UDim2.new(0, 0, (i - 1) * 0.2, 0)
-    TabButton.BackgroundColor3 = Color3.new(0.3, 0.3, 0.3)
+    TabButton.BackgroundColor3 = buttonColor
     TabButton.BorderSizePixel = 0
     TabButton.MouseButton1Click:Connect(function()
         for _, tab in pairs(Tabs) do
@@ -53,19 +60,46 @@ for i, buttonName in ipairs(ButtonNames) do
     -- Create tab content
     local TabContent = Instance.new("Frame")
     TabContent.Parent = MainFrame
-    TabContent.BackgroundColor3 = Color3.new(0.3, 0.3, 0.3)
+    TabContent.BackgroundColor3 = backgroundColor
     TabContent.Size = UDim2.new(0.8, 0, 1, 0)
     TabContent.Position = UDim2.new(0.2, 0, 0, 0)
     TabContent.Visible = false -- Initially hidden
     Tabs[buttonName] = TabContent
 
-    -- Add content to the tab (example)
-    local Label = Instance.new("TextLabel")
-    Label.Parent = TabContent
-    Label.Text = buttonName .. " Content"
-    Label.Size = UDim2.new(1, 0, 1, 0)
-    Label.BackgroundTransparency = 1
-    Label.TextColor3 = Color3.new(1, 1, 1)
+    -- Create Toggle Buttons in each tab
+    for j = 1, 2 do
+        local ToggleButton = Instance.new("TextButton")
+        local CheckBox = Instance.new("TextLabel")
+        
+        -- Toggle Button setup
+        ToggleButton.Parent = TabContent
+        ToggleButton.Text = "Toggle " .. j
+        ToggleButton.TextColor3 = textColor
+        ToggleButton.Size = UDim2.new(0.6, 0, 0.15, 0)
+        ToggleButton.Position = UDim2.new(0.05, 0, (j - 1) * 0.2 + 0.1, 0)
+        ToggleButton.BackgroundColor3 = buttonColor
+        ToggleButton.BorderSizePixel = 0
+        
+        -- CheckBox setup
+        CheckBox.Parent = TabContent
+        CheckBox.Text = "" -- Empty until toggled
+        CheckBox.TextColor3 = Color3.new(0, 1, 0) -- Green checkmark when toggled
+        CheckBox.BackgroundColor3 = backgroundColor
+        CheckBox.Size = UDim2.new(0.1, 0, 0.15, 0)
+        CheckBox.Position = UDim2.new(0.7, 0, (j - 1) * 0.2 + 0.1, 0)
+        CheckBox.BorderSizePixel = 0
+        
+        -- Toggle functionality
+        local toggled = false
+        ToggleButton.MouseButton1Click:Connect(function()
+            toggled = not toggled
+            if toggled then
+                CheckBox.Text = "✓" -- Show checkmark
+            else
+                CheckBox.Text = ""   -- Remove checkmark
+            end
+        end)
+    end
 end
 
 -- Default to show the first tab
