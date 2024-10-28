@@ -45,16 +45,17 @@ for _, tabName in ipairs(tabs) do
     tabButton.Text = tabName
     tabButton.Size = UDim2.new(1, 0, 0.2, 0) -- Smaller tabs
     tabButton.BackgroundColor3 = Color3.new(0.3, 0.3, 0.3)
-    
-    -- Tab click functionality (we'll implement it later)
+
+    -- Tab click functionality
     tabButton.MouseButton1Click:Connect(function()
-        -- Logic to switch tabs goes here later
+        -- Hide all tabs
         TeleportsTab.Visible = false
         AimlockTab.Visible = false
         PlayerTab.Visible = false
         ShopTab.Visible = false
         MiscTab.Visible = false
 
+        -- Show the clicked tab
         if tabName == "Teleports" then
             TeleportsTab.Visible = true
         elseif tabName == "Aimlock" then
