@@ -1,189 +1,123 @@
--- Create GUI
+-- Roblox GUI Script with Animations and Slider Toggles
+-- Using black and red theme with transparency and rounded edges
+
 local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Parent = game.CoreGui
+local User = game.Players.LocalPlayer.Name
+
+-- Loading Screen
+local LoadingFrame = Instance.new("Frame")
+LoadingFrame.Parent = ScreenGui
+LoadingFrame.Size = UDim2.new(0.4, 0, 0.2, 0)
+LoadingFrame.Position = UDim2.new(0.3, 0, 0.4, 0)
+LoadingFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+LoadingFrame.BackgroundTransparency = 0.4
+LoadingFrame.BorderSizePixel = 0
+LoadingFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+LoadingFrame.ClipsDescendants = true
+LoadingFrame.Visible = true
+LoadingFrame.BackgroundTransparency = 0.2
+LoadingFrame.UICorner = Instance.new("UICorner", LoadingFrame)
+LoadingFrame.UICorner.CornerRadius = UDim.new(0, 12)
+
+local LoadingText = Instance.new("TextLabel")
+LoadingText.Parent = LoadingFrame
+LoadingText.Size = UDim2.new(1, 0, 1, 0)
+LoadingText.Position = UDim2.new(0.5, 0, 0.5, 0)
+LoadingText.Text = "Loading..."
+LoadingText.TextColor3 = Color3.fromRGB(255, 0, 0)
+LoadingText.TextSize = 32
+LoadingText.TextTransparency = 0
+LoadingText.AnchorPoint = Vector2.new(0.5, 0.5)
+LoadingText.BackgroundTransparency = 1
+
+-- Animate Loading Screen
+local TweenService = game:GetService("TweenService")
+local function loadingAnimation()
+    wait(1)
+    LoadingText.Text = "Loaded"
+    wait(1)
+    LoadingText.Text = "Welcome, " .. User
+    wait(1)
+    LoadingText.Text = "Press Start to open the script"
+end
+loadingAnimation()
+
+-- Main GUI Window
 local MainFrame = Instance.new("Frame")
-local TabContainer = Instance.new("Frame")
-local WelcomeFrame = Instance.new("Frame")
-local WelcomeLabel = Instance.new("TextLabel")
-local StartButton = Instance.new("TextButton")
-local ButtonNames = {"Player", "Misc", "Teleports", "Shop", "Aimlock"}
-local Tabs = {}
-local LocalPlayerName = game.Players.LocalPlayer.Name
-
--- Set up ScreenGui for local player
-ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
-
--- Theme Colors
-local backgroundColor = Color3.fromRGB(25, 25, 25) -- Dark black
-local buttonColor = Color3.fromRGB(150, 0, 0)      -- Dark red
-local textColor = Color3.fromRGB(255, 255, 255)    -- White text
-local transparentBlack = Color3.fromRGB(10, 10, 10) -- Subtle black for transparency
-
--- Create UI Corner function
-local function addRoundedCorners(uiElement, radius)
-    local uiCorner = Instance.new("UICorner")
-    uiCorner.CornerRadius = UDim.new(0, radius)
-    uiCorner.Parent = uiElement
-end
-
--- Main Frame Setup (Rounded)
 MainFrame.Parent = ScreenGui
-MainFrame.BackgroundColor3 = backgroundColor
-MainFrame.BackgroundTransparency = 0.2
-MainFrame.Position = UDim2.new(0.35, 0, 0.35, 0)
-MainFrame.Size = UDim2.new(0.3, 0, 0.5, 0)
-MainFrame.Active = true
-MainFrame.Draggable = true
+MainFrame.Size = UDim2.new(0.5, 0, 0.7, 0)
+MainFrame.Position = UDim2.new(0.25, 0, 0.15, 0)
+MainFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+MainFrame.BackgroundTransparency = 0.3
 MainFrame.Visible = false
-addRoundedCorners(MainFrame, 12)  -- Adding rounded corners to Main Frame
+MainFrame.UICorner = Instance.new("UICorner", MainFrame)
+MainFrame.UICorner.CornerRadius = UDim.new(0, 12)
 
--- Tab Container Setup
-TabContainer.Parent = MainFrame
-TabContainer.BackgroundColor3 = buttonColor
-TabContainer.Size = UDim2.new(0.2, 0, 1, 0)
-TabContainer.Position = UDim2.new(0, 0, 0, 0)
-addRoundedCorners(TabContainer, 12)  -- Adding rounded corners to Tab Container
+local XButton = Instance.new("TextButton")
+XButton.Parent = MainFrame
+XButton.Text = "X"
+XButton.Position = UDim2.new(0.95, 0, 0.01, 0)
+XButton.TextColor3 = Color3.fromRGB(255, 0, 0)
+XButton.BackgroundTransparency = 1
 
--- Welcome Screen Setup (Rounded and Smaller)
-WelcomeFrame.Parent = ScreenGui
-WelcomeFrame.BackgroundColor3 = transparentBlack
-WelcomeFrame.Size = UDim2.new(0.2, 0, 0.3, 0) -- Smaller, compact size
-WelcomeFrame.Position = UDim2.new(0.4, 0, 0.35, 0)
-addRoundedCorners(WelcomeFrame, 15)  -- Adding rounded corners to Welcome Frame
-
--- Welcome Label Setup
-WelcomeLabel.Parent = WelcomeFrame
-WelcomeLabel.Text = "Loading..."
-WelcomeLabel.TextColor3 = textColor
-WelcomeLabel.Size = UDim2.new(1, 0, 0.4, 0)
-WelcomeLabel.Position = UDim2.new(0, 0, 0.3, 0)
-WelcomeLabel.Font = Enum.Font.SourceSansBold
-WelcomeLabel.TextScaled = true
-WelcomeLabel.BackgroundTransparency = 1
-
--- Start Button Setup (Rounded)
-StartButton.Parent = WelcomeFrame
-StartButton.Text = "Start"
-StartButton.TextColor3 = textColor
-StartButton.Size = UDim2.new(0.6, 0, 0.2, 0)
-StartButton.Position = UDim2.new(0.2, 0, 0.65, 0)
-StartButton.BackgroundColor3 = buttonColor
-StartButton.Visible = false
-StartButton.Font = Enum.Font.SourceSansBold
-StartButton.TextScaled = true
-addRoundedCorners(StartButton, 10)  -- Adding rounded corners to Start Button
-
--- Animation Sequence
-local function animateWelcome()
-    -- Show Loading... with fade-in
-    WelcomeLabel.Text = "Loading..."
-    for i = 0, 1, 0.02 do
-        WelcomeLabel.TextTransparency = 1 - i
-        wait(0.05)
-    end
-    wait(1)
-
-    -- Transition to Welcome (User) text
-    WelcomeLabel.Text = "Welcome, " .. LocalPlayerName
-    for i = 1, 0, -0.02 do
-        WelcomeLabel.TextTransparency = i
-        wait(0.05)
-    end
-    wait(1)
-
-    -- Transition to prompt for Start
-    WelcomeLabel.Text = "Press Start to open the script"
-    for i = 1, 0, -0.02 do
-        WelcomeLabel.TextTransparency = i
-        wait(0.05)
-    end
-    wait(1)
-
-    -- Show Start Button with fade-in effect
-    StartButton.Visible = true
-    for i = 0, 1, 0.02 do
-        StartButton.TextTransparency = 1 - i
-        wait(0.05)
-    end
+-- Tab Button Styles
+local tabs = {"Teleports", "Aimlock", "Player", "Shop", "Misc"}
+for i, tabName in pairs(tabs) do
+    local TabButton = Instance.new("TextButton")
+    TabButton.Parent = MainFrame
+    TabButton.Size = UDim2.new(0.2, 0, 0.08, 0)
+    TabButton.Position = UDim2.new(0.02, 0, 0.1 + (i - 1) * 0.1, 0)
+    TabButton.Text = tabName
+    TabButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+    TabButton.BackgroundColor3 = Color3.fromRGB(50, 0, 0)
+    TabButton.BackgroundTransparency = 0.3
+    TabButton.UICorner = Instance.new("UICorner", TabButton)
+    TabButton.UICorner.CornerRadius = UDim.new(0, 8)
 end
 
--- Run animation
-animateWelcome()
+-- Slider Toggle
+local function createToggle(parent, pos)
+    local Toggle = Instance.new("Frame")
+    Toggle.Parent = parent
+    Toggle.Size = UDim2.new(0.1, 0, 0.05, 0)
+    Toggle.Position = pos
+    Toggle.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+    Toggle.UICorner = Instance.new("UICorner", Toggle)
+    Toggle.UICorner.CornerRadius = UDim.new(0, 12)
+    
+    local Slider = Instance.new("Frame")
+    Slider.Parent = Toggle
+    Slider.Size = UDim2.new(0.5, 0, 1, 0)
+    Slider.Position = UDim2.new(0, 0, 0, 0)
+    Slider.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    Slider.UICorner = Instance.new("UICorner", Slider)
+    Slider.UICorner.CornerRadius = UDim.new(0, 12)
+    
+    -- Toggle functionality
+    local toggled = false
+    Toggle.MouseButton1Click:Connect(function()
+        toggled = not toggled
+        if toggled then
+            Toggle.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
+            Slider:TweenPosition(UDim2.new(0.5, 0, 0, 0), "Out", "Quad", 0.2)
+        else
+            Toggle.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+            Slider:TweenPosition(UDim2.new(0, 0, 0, 0), "Out", "Quad", 0.2)
+        end
+    end)
+end
 
--- Start Button functionality
-StartButton.MouseButton1Click:Connect(function()
-    WelcomeFrame:Destroy()
-    MainFrame.Visible = true
+-- Add toggle to each tab
+for i = 1, #tabs do
+    createToggle(MainFrame, UDim2.new(0.3, 0, 0.1 * i, 0))
+end
+
+-- Close GUI with X button
+XButton.MouseButton1Click:Connect(function()
+    MainFrame.Visible = false
 end)
 
--- Create Tabs with Rounded Buttons
-for i, buttonName in ipairs(ButtonNames) do
-    local TabButton = Instance.new("TextButton")
-    TabButton.Parent = TabContainer
-    TabButton.Text = buttonName
-    TabButton.TextColor3 = textColor
-    TabButton.Size = UDim2.new(1, 0, 0.15, 0)
-    TabButton.Position = UDim2.new(0, 0, (i - 1) * 0.15, 0)
-    TabButton.BackgroundColor3 = buttonColor
-    TabButton.BorderSizePixel = 0
-    addRoundedCorners(TabButton, 8)  -- Adding rounded corners to Tab Buttons
-
-    -- Toggle visibility between tabs
-    TabButton.MouseButton1Click:Connect(function()
-        for _, tab in pairs(Tabs) do
-            tab.Visible = false -- Hide all tabs
-        end
-        Tabs[buttonName].Visible = true -- Show selected tab
-    end)
-
-    -- Create tab content
-    local TabContent = Instance.new("Frame")
-    TabContent.Parent = MainFrame
-    TabContent.BackgroundColor3 = backgroundColor
-    TabContent.Size = UDim2.new(0.8, 0, 1, 0)
-    TabContent.Position = UDim2.new(0.2, 0, 0, 0)
-    TabContent.Visible = false -- Initially hidden
-    Tabs[buttonName] = TabContent
-
-    -- Create Toggle Buttons in each tab
-    for j = 1, 2 do
-        local ToggleButton = Instance.new("TextButton")
-        local CheckBox = Instance.new("TextLabel")
-        
-        -- Toggle Button setup
-        ToggleButton.Parent = TabContent
-        ToggleButton.Text = "Toggle " .. j
-        ToggleButton.TextColor3 = textColor
-        ToggleButton.Size = UDim2.new(0.5, 0, 0.1, 0)
-        ToggleButton.Position = UDim2.new(0.05, 0, (j - 1) * 0.2 + 0.1, 0)
-        ToggleButton.BackgroundColor3 = buttonColor
-        ToggleButton.BorderSizePixel = 0
-        addRoundedCorners(ToggleButton, 6)  -- Rounded corners for toggle buttons
-        
-        -- CheckBox setup
-        CheckBox.Parent = TabContent
-        CheckBox.Text = ""
-        CheckBox.TextColor3 = Color3.new(0, 1, 0) -- Green checkmark when toggled
-        CheckBox.BackgroundColor3 = backgroundColor
-        CheckBox.Size = UDim2.new(0.1, 0, 0.1, 0)
-        CheckBox.Position = UDim2.new(0.6, 5, (j - 1) * 0.2 + 0.1, 0)
-        CheckBox.BorderSizePixel = 1
-        CheckBox.Font = Enum.Font.SourceSansBold
-        CheckBox.TextScaled = true
-        addRoundedCorners(CheckBox, 5)  -- Rounded corners for checkbox
-        
-        -- Toggle functionality
-        local toggled = false
-        ToggleButton.MouseButton1Click:Connect(function()
-            toggled = not toggled
-            if toggled then
-                CheckBox.Text = "✓"
-            else
-                CheckBox.Text = ""
-            end
-        end)
-    end
-end
-
--- Default to show the first tab
-Tabs[ButtonNames[1]].Visible = true
---Iknow! to rizz..
+-- Show MainFrame after loading
+MainFrame.Visible = true
+--ayyyowthhwas,here
