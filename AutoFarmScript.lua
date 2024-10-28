@@ -1,38 +1,32 @@
 -- Create GUI
 local ScreenGui = Instance.new("ScreenGui")
 local MainFrame = Instance.new("Frame")
-local CloseButton = Instance.new("TextButton")
 local TabContainer = Instance.new("Frame")
+local WelcomeFrame = Instance.new("Frame")
+local WelcomeLabel = Instance.new("TextLabel")
+local StartButton = Instance.new("TextButton")
 local ButtonNames = {"Player", "Misc", "Teleports", "Shop", "Aimlock"}
 local Tabs = {}
+local LocalPlayerName = game.Players.LocalPlayer.Name
 
--- Setting up ScreenGui for local player
+-- Set up ScreenGui for local player
 ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 
 -- Theme Colors
-local backgroundColor = Color3.fromRGB(230, 200, 255) -- Light purple for the background
-local buttonColor = Color3.fromRGB(210, 180, 230)     -- Slightly darker purple for the buttons
-local textColor = Color3.fromRGB(90, 0, 120)          -- Dark purple for text
+local backgroundColor = Color3.fromRGB(25, 25, 25) -- Dark black
+local buttonColor = Color3.fromRGB(150, 0, 0)      -- Dark red
+local textColor = Color3.fromRGB(255, 255, 255)    -- White text
+local transparentBlack = Color3.fromRGB(10, 10, 10) -- Subtle black for transparency
 
 -- Main Frame Setup
 MainFrame.Parent = ScreenGui
 MainFrame.BackgroundColor3 = backgroundColor
+MainFrame.BackgroundTransparency = 0.2
 MainFrame.Position = UDim2.new(0.35, 0, 0.35, 0)
 MainFrame.Size = UDim2.new(0.3, 0, 0.5, 0)
 MainFrame.Active = true
 MainFrame.Draggable = true
-
--- Close Button Setup
-CloseButton.Parent = MainFrame
-CloseButton.Text = "X"
-CloseButton.TextColor3 = textColor
-CloseButton.Size = UDim2.new(0.05, 0, 0.05, 0)
-CloseButton.Position = UDim2.new(0.95, 0, 0, 0)
-CloseButton.BackgroundColor3 = Color3.new(1, 0, 0)
-CloseButton.BorderSizePixel = 0
-CloseButton.MouseButton1Click:Connect(function()
-    ScreenGui:Destroy() -- Close the GUI when X is clicked
-end)
+MainFrame.Visible = false
 
 -- Tab Container Setup
 TabContainer.Parent = MainFrame
@@ -40,13 +34,83 @@ TabContainer.BackgroundColor3 = buttonColor
 TabContainer.Size = UDim2.new(0.2, 0, 1, 0)
 TabContainer.Position = UDim2.new(0, 0, 0, 0)
 
+-- Welcome Screen Setup
+WelcomeFrame.Parent = ScreenGui
+WelcomeFrame.BackgroundColor3 = transparentBlack
+WelcomeFrame.Size = UDim2.new(0.3, 0, 0.5, 0)
+WelcomeFrame.Position = UDim2.new(0.35, 0, 0.35, 0)
+
+-- Welcome Label Setup
+WelcomeLabel.Parent = WelcomeFrame
+WelcomeLabel.Text = "Loading..."
+WelcomeLabel.TextColor3 = textColor
+WelcomeLabel.Size = UDim2.new(1, 0, 0.3, 0)
+WelcomeLabel.Position = UDim2.new(0, 0, 0.35, 0)
+WelcomeLabel.Font = Enum.Font.SourceSansBold
+WelcomeLabel.TextScaled = true
+WelcomeLabel.BackgroundTransparency = 1
+
+-- Start Button Setup
+StartButton.Parent = WelcomeFrame
+StartButton.Text = "Start"
+StartButton.TextColor3 = textColor
+StartButton.Size = UDim2.new(0.4, 0, 0.1, 0)
+StartButton.Position = UDim2.new(0.3, 0, 0.7, 0)
+StartButton.BackgroundColor3 = buttonColor
+StartButton.Visible = false
+StartButton.Font = Enum.Font.SourceSansBold
+StartButton.TextScaled = true
+
+-- Animation Sequence
+local function animateWelcome()
+    -- Show Loading... with fade-in
+    WelcomeLabel.Text = "Loading..."
+    for i = 0, 1, 0.02 do
+        WelcomeLabel.TextTransparency = 1 - i
+        wait(0.05)
+    end
+    wait(1)
+
+    -- Transition to Welcome (User) text
+    WelcomeLabel.Text = "Welcome, " .. LocalPlayerName
+    for i = 1, 0, -0.02 do
+        WelcomeLabel.TextTransparency = i
+        wait(0.05)
+    end
+    wait(1)
+
+    -- Transition to prompt for Start
+    WelcomeLabel.Text = "Press Start to open the script"
+    for i = 1, 0, -0.02 do
+        WelcomeLabel.TextTransparency = i
+        wait(0.05)
+    end
+    wait(1)
+
+    -- Show Start Button with fade-in effect
+    StartButton.Visible = true
+    for i = 0, 1, 0.02 do
+        StartButton.TextTransparency = 1 - i
+        wait(0.05)
+    end
+end
+
+-- Run animation
+animateWelcome()
+
+-- Start Button functionality
+StartButton.MouseButton1Click:Connect(function()
+    WelcomeFrame:Destroy()
+    MainFrame.Visible = true
+end)
+
 -- Create Tabs
 for i, buttonName in ipairs(ButtonNames) do
     local TabButton = Instance.new("TextButton")
     TabButton.Parent = TabContainer
     TabButton.Text = buttonName
     TabButton.TextColor3 = textColor
-    TabButton.Size = UDim2.new(1, 0, 0.15, 0) -- Reduced height
+    TabButton.Size = UDim2.new(1, 0, 0.15, 0)
     TabButton.Position = UDim2.new(0, 0, (i - 1) * 0.15, 0)
     TabButton.BackgroundColor3 = buttonColor
     TabButton.BorderSizePixel = 0
@@ -54,7 +118,7 @@ for i, buttonName in ipairs(ButtonNames) do
         for _, tab in pairs(Tabs) do
             tab.Visible = false -- Hide all tabs
         end
-        Tabs[buttonName].Visible = true -- Show the selected tab
+        Tabs[buttonName].Visible = true -- Show selected tab
     end)
 
     -- Create tab content
@@ -75,30 +139,30 @@ for i, buttonName in ipairs(ButtonNames) do
         ToggleButton.Parent = TabContent
         ToggleButton.Text = "Toggle " .. j
         ToggleButton.TextColor3 = textColor
-        ToggleButton.Size = UDim2.new(0.5, 0, 0.1, 0) -- Reduced button size
+        ToggleButton.Size = UDim2.new(0.5, 0, 0.1, 0)
         ToggleButton.Position = UDim2.new(0.05, 0, (j - 1) * 0.2 + 0.1, 0)
         ToggleButton.BackgroundColor3 = buttonColor
         ToggleButton.BorderSizePixel = 0
         
         -- CheckBox setup
         CheckBox.Parent = TabContent
-        CheckBox.Text = "" -- Empty until toggled
+        CheckBox.Text = ""
         CheckBox.TextColor3 = Color3.new(0, 1, 0) -- Green checkmark when toggled
         CheckBox.BackgroundColor3 = backgroundColor
-        CheckBox.Size = UDim2.new(0.1, 0, 0.1, 0) -- Same size as before for alignment
+        CheckBox.Size = UDim2.new(0.1, 0, 0.1, 0)
         CheckBox.Position = UDim2.new(0.6, 5, (j - 1) * 0.2 + 0.1, 0)
         CheckBox.BorderSizePixel = 1
-        CheckBox.Font = Enum.Font.SourceSansBold -- Bold font for visibility
-        CheckBox.TextScaled = true -- Scales text to fit inside the box
+        CheckBox.Font = Enum.Font.SourceSansBold
+        CheckBox.TextScaled = true
         
         -- Toggle functionality
         local toggled = false
         ToggleButton.MouseButton1Click:Connect(function()
             toggled = not toggled
             if toggled then
-                CheckBox.Text = "✓" -- Show larger checkmark
+                CheckBox.Text = "✓"
             else
-                CheckBox.Text = ""   -- Remove checkmark
+                CheckBox.Text = ""
             end
         end)
     end
@@ -106,4 +170,3 @@ end
 
 -- Default to show the first tab
 Tabs[ButtonNames[1]].Visible = true
--- Test sigma!!
