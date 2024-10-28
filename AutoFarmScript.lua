@@ -256,4 +256,4 @@ animateText(LoadText, "Loading complete!", 1, 28)
 wait(2) -- Wait for a while to see the loading text
 Loader.Visible = false
 displayMainGui()
---maybeworking?
+--maybeworking?111
