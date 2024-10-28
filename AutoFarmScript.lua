@@ -32,29 +32,12 @@ for _, tabName in ipairs(tabs) do
     tabButton.Text = tabName
     tabButton.Size = UDim2.new(1 / #tabs, 0, 1, 0)
     tabButton.BackgroundColor3 = Color3.new(0.3, 0.3, 0.3)
-    tabButton.MouseButton1Click:Connect(function()
-        -- Hide all tabs
-        TeleportsTab.Visible = false
-        AimlockTab.Visible = false
-        PlayerTab.Visible = false
-        ShopTab.Visible = false
-        MiscTab.Visible = false
-
-        -- Show selected tab
-        if tabName == "Teleports" then
-            TeleportsTab.Visible = true
-        elseif tabName == "Aimlock" then
-            AimlockTab.Visible = true
-        elseif tabName == "Player" then
-            PlayerTab.Visible = true
-        elseif tabName == "Shop" then
-            ShopTab.Visible = true
-        elseif tabName == "Misc" then
-            MiscTab.Visible = true
-        end
-    end)
     
-    tabButton.Parent = TabContainer
+    -- Add a click event to change tab visibility (we'll implement it later)
+    tabButton.MouseButton1Click:Connect(function()
+        -- Logic to switch tabs goes here later
+    end)
+
     table.insert(TabButtons, tabButton)
 end
 
@@ -64,7 +47,7 @@ local function createTab(tabFrame, backgroundColor)
     tabFrame.BackgroundColor3 = backgroundColor
     tabFrame.Size = UDim2.new(1, 0, 0.9, 0)
     tabFrame.Position = UDim2.new(0, 0, 0.1, 0)
-    tabFrame.Visible = false
+    tabFrame.Visible = false -- Start all tabs as hidden
 end
 
 createTab(TeleportsTab, Color3.new(0.3, 0.5, 0.5))
@@ -75,24 +58,3 @@ createTab(MiscTab, Color3.new(0.5, 0.3, 0.3))
 
 -- Make the first tab visible by default
 TeleportsTab.Visible = true
-
--- Example Content for Teleports Tab
-local teleportButton = Instance.new("TextButton")
-teleportButton.Parent = TeleportsTab
-teleportButton.Text = "Save Current Position"
-teleportButton.Size = UDim2.new(0.5, 0, 0.1, 0)
-teleportButton.Position = UDim2.new(0.25, 0, 0.25, 0)
-teleportButton.BackgroundColor3 = Color3.new(0.3, 0.8, 0.3)
-teleportButton.MouseButton1Click:Connect(function()
-    local player = game.Players.LocalPlayer
-    local character = player.Character or player.CharacterAdded:Wait()
-    if character and character:FindFirstChild("HumanoidRootPart") then
-        savedPosition = character.HumanoidRootPart.CFrame
-        print("Position saved!")
-    else
-        warn("Unable to save position.")
-    end
-end)
-
--- Additional tabs can have similar content buttons added here
-
