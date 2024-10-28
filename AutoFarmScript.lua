@@ -18,7 +18,14 @@ local buttonColor = Color3.fromRGB(150, 0, 0)      -- Dark red
 local textColor = Color3.fromRGB(255, 255, 255)    -- White text
 local transparentBlack = Color3.fromRGB(10, 10, 10) -- Subtle black for transparency
 
--- Main Frame Setup
+-- Create UI Corner function
+local function addRoundedCorners(uiElement, radius)
+    local uiCorner = Instance.new("UICorner")
+    uiCorner.CornerRadius = UDim.new(0, radius)
+    uiCorner.Parent = uiElement
+end
+
+-- Main Frame Setup (Rounded)
 MainFrame.Parent = ScreenGui
 MainFrame.BackgroundColor3 = backgroundColor
 MainFrame.BackgroundTransparency = 0.2
@@ -27,39 +34,43 @@ MainFrame.Size = UDim2.new(0.3, 0, 0.5, 0)
 MainFrame.Active = true
 MainFrame.Draggable = true
 MainFrame.Visible = false
+addRoundedCorners(MainFrame, 12)  -- Adding rounded corners to Main Frame
 
 -- Tab Container Setup
 TabContainer.Parent = MainFrame
 TabContainer.BackgroundColor3 = buttonColor
 TabContainer.Size = UDim2.new(0.2, 0, 1, 0)
 TabContainer.Position = UDim2.new(0, 0, 0, 0)
+addRoundedCorners(TabContainer, 12)  -- Adding rounded corners to Tab Container
 
--- Welcome Screen Setup
+-- Welcome Screen Setup (Rounded and Smaller)
 WelcomeFrame.Parent = ScreenGui
 WelcomeFrame.BackgroundColor3 = transparentBlack
-WelcomeFrame.Size = UDim2.new(0.3, 0, 0.5, 0)
-WelcomeFrame.Position = UDim2.new(0.35, 0, 0.35, 0)
+WelcomeFrame.Size = UDim2.new(0.2, 0, 0.3, 0) -- Smaller, compact size
+WelcomeFrame.Position = UDim2.new(0.4, 0, 0.35, 0)
+addRoundedCorners(WelcomeFrame, 15)  -- Adding rounded corners to Welcome Frame
 
 -- Welcome Label Setup
 WelcomeLabel.Parent = WelcomeFrame
 WelcomeLabel.Text = "Loading..."
 WelcomeLabel.TextColor3 = textColor
-WelcomeLabel.Size = UDim2.new(1, 0, 0.3, 0)
-WelcomeLabel.Position = UDim2.new(0, 0, 0.35, 0)
+WelcomeLabel.Size = UDim2.new(1, 0, 0.4, 0)
+WelcomeLabel.Position = UDim2.new(0, 0, 0.3, 0)
 WelcomeLabel.Font = Enum.Font.SourceSansBold
 WelcomeLabel.TextScaled = true
 WelcomeLabel.BackgroundTransparency = 1
 
--- Start Button Setup
+-- Start Button Setup (Rounded)
 StartButton.Parent = WelcomeFrame
 StartButton.Text = "Start"
 StartButton.TextColor3 = textColor
-StartButton.Size = UDim2.new(0.4, 0, 0.1, 0)
-StartButton.Position = UDim2.new(0.3, 0, 0.7, 0)
+StartButton.Size = UDim2.new(0.6, 0, 0.2, 0)
+StartButton.Position = UDim2.new(0.2, 0, 0.65, 0)
 StartButton.BackgroundColor3 = buttonColor
 StartButton.Visible = false
 StartButton.Font = Enum.Font.SourceSansBold
 StartButton.TextScaled = true
+addRoundedCorners(StartButton, 10)  -- Adding rounded corners to Start Button
 
 -- Animation Sequence
 local function animateWelcome()
@@ -104,7 +115,7 @@ StartButton.MouseButton1Click:Connect(function()
     MainFrame.Visible = true
 end)
 
--- Create Tabs
+-- Create Tabs with Rounded Buttons
 for i, buttonName in ipairs(ButtonNames) do
     local TabButton = Instance.new("TextButton")
     TabButton.Parent = TabContainer
@@ -114,6 +125,9 @@ for i, buttonName in ipairs(ButtonNames) do
     TabButton.Position = UDim2.new(0, 0, (i - 1) * 0.15, 0)
     TabButton.BackgroundColor3 = buttonColor
     TabButton.BorderSizePixel = 0
+    addRoundedCorners(TabButton, 8)  -- Adding rounded corners to Tab Buttons
+
+    -- Toggle visibility between tabs
     TabButton.MouseButton1Click:Connect(function()
         for _, tab in pairs(Tabs) do
             tab.Visible = false -- Hide all tabs
@@ -143,6 +157,7 @@ for i, buttonName in ipairs(ButtonNames) do
         ToggleButton.Position = UDim2.new(0.05, 0, (j - 1) * 0.2 + 0.1, 0)
         ToggleButton.BackgroundColor3 = buttonColor
         ToggleButton.BorderSizePixel = 0
+        addRoundedCorners(ToggleButton, 6)  -- Rounded corners for toggle buttons
         
         -- CheckBox setup
         CheckBox.Parent = TabContent
@@ -154,6 +169,7 @@ for i, buttonName in ipairs(ButtonNames) do
         CheckBox.BorderSizePixel = 1
         CheckBox.Font = Enum.Font.SourceSansBold
         CheckBox.TextScaled = true
+        addRoundedCorners(CheckBox, 5)  -- Rounded corners for checkbox
         
         -- Toggle functionality
         local toggled = false
@@ -170,4 +186,4 @@ end
 
 -- Default to show the first tab
 Tabs[ButtonNames[1]].Visible = true
---To know!!
+--Iknow!
