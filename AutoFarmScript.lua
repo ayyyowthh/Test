@@ -5,8 +5,9 @@ local LoadText = Instance.new("TextLabel")
 local MainFrame = Instance.new("Frame")
 local CloseButton = Instance.new("TextButton")
 local TabContainer = Instance.new("Frame")
+local ContentFrame = Instance.new("Frame") -- Frame for tab content
 local Tabs = {"Player", "Aimlock", "Teleports", "Shop", "Misc"}
-local Buttons = {}
+local ButtonStates = {}
 
 -- Set up ScreenGui and Loader frame
 ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
@@ -63,12 +64,46 @@ local function displayMainGui()
     MainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
     MainFrame.BorderSizePixel = 0
     MainFrame.Visible = true
-    
+
+    -- Enable dragging
+    local dragging
+    local dragInput
+    local startPos
+
+    local function update(input)
+        local delta = input.Position - startPos
+        MainFrame.Position = UDim2.new(MainFrame.Position.X.Scale, MainFrame.Position.X.Offset + delta.X, MainFrame.Position.Y.Scale, MainFrame.Position.Y.Offset + delta.Y)
+    end
+
+    MainFrame.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragging = true
+            startPos = input.Position
+            input.Changed:Connect(function()
+                if input.UserInputState == Enum.UserInputState.End then
+                    dragging = false
+                end
+            end)
+        end
+    end)
+
+    MainFrame.InputChanged:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseMovement then
+            dragInput = input
+        end
+    end)
+
+    game:GetService("UserInputService").InputChanged:Connect(function(input)
+        if dragging and input == dragInput then
+            update(input)
+        end
+    end)
+
     -- Round out the MainFrame
     local UICornerMain = Instance.new("UICorner")
     UICornerMain.CornerRadius = UDim.new(0, 15)
     UICornerMain.Parent = MainFrame
-    
+
     -- Create Tab Container
     TabContainer.Name = "TabContainer"
     TabContainer.Parent = MainFrame
@@ -77,8 +112,18 @@ local function displayMainGui()
     TabContainer.Size = UDim2.new(0, 100, 1, 0) -- Sufficient width for tabs
     TabContainer.Position = UDim2.new(0, 0, 0, 0)
 
-    -- Create tabs
+    -- Create Content Frame for displaying tab content
+    ContentFrame.Name = "ContentFrame"
+    ContentFrame.Parent = MainFrame
+    ContentFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+    ContentFrame.BackgroundTransparency = 0.5
+    ContentFrame.Size = UDim2.new(1, -100, 1, 0)
+    ContentFrame.Position = UDim2.new(0, 100, 0, 0)
+
+    -- Create tabs and button states
     for i, tabName in ipairs(Tabs) do
+        ButtonStates[tabName] = false -- Initialize button state
+
         local TabButton = Instance.new("TextButton")
         TabButton.Name = tabName .. "Button"
         TabButton.Parent = TabContainer
@@ -95,91 +140,120 @@ local function displayMainGui()
         UICornerTab.Parent = TabButton
 
         TabButton.MouseButton1Click:Connect(function()
-            -- Add functionality for switching tabs here
+            -- Clear content
+            for _, child in ipairs(ContentFrame:GetChildren()) do
+                if child:IsA("TextButton") or child:IsA("Frame") then
+                    child:Destroy()
+                end
+            end
+            
+            -- Highlight selected tab
             for _, btn in ipairs(TabContainer:GetChildren()) do
                 if btn:IsA("TextButton") then
                     btn.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
                 end
             end
             TabButton.BackgroundColor3 = Color3.fromRGB(100, 100, 100) -- Highlight selected tab
+
+            -- Add content based on the selected tab
+            if tabName == "Player" then
+                local Button1 = Instance.new("TextButton")
+                Button1.Parent = ContentFrame
+                Button1.Size = UDim2.new(0, 150, 0, 50)
+                Button1.Position = UDim2.new(0.5, -75, 0.5, -25)
+                Button1.BackgroundColor3 = Color3.fromRGB(200, 0, 0)
+                Button1.TextColor3 = Color3.fromRGB(255, 255, 255)
+                Button1.Text = "Player Button 1"
+                Button1.TextSize = 20
+
+                Button1.MouseButton1Click:Connect(function()
+                    ButtonStates["Player"] = not ButtonStates["Player"]
+                    Button1.BackgroundColor3 = ButtonStates["Player"] and Color3.fromRGB(0, 200, 0) or Color3.fromRGB(200, 0, 0)
+                end)
+            elseif tabName == "Aimlock" then
+                local Button1 = Instance.new("TextButton")
+                Button1.Parent = ContentFrame
+                Button1.Size = UDim2.new(0, 150, 0, 50)
+                Button1.Position = UDim2.new(0.5, -75, 0.5, -25)
+                Button1.BackgroundColor3 = Color3.fromRGB(200, 0, 0)
+                Button1.TextColor3 = Color3.fromRGB(255, 255, 255)
+                Button1.Text = "Aimlock Button 1"
+                Button1.TextSize = 20
+
+                Button1.MouseButton1Click:Connect(function()
+                    ButtonStates["Aimlock"] = not ButtonStates["Aimlock"]
+                    Button1.BackgroundColor3 = ButtonStates["Aimlock"] and Color3.fromRGB(0, 200, 0) or Color3.fromRGB(200, 0, 0)
+                end)
+            elseif tabName == "Teleports" then
+                local Button1 = Instance.new("TextButton")
+                Button1.Parent = ContentFrame
+                Button1.Size = UDim2.new(0, 150, 0, 50)
+                Button1.Position = UDim2.new(0.5, -75, 0.5, -25)
+                Button1.BackgroundColor3 = Color3.fromRGB(200, 0, 0)
+                Button1.TextColor3 = Color3.fromRGB(255, 255, 255)
+                Button1.Text = "Teleport Button 1"
+                Button1.TextSize = 20
+
+                Button1.MouseButton1Click:Connect(function()
+                    ButtonStates["Teleports"] = not ButtonStates["Teleports"]
+                    Button1.BackgroundColor3 = ButtonStates["Teleports"] and Color3.fromRGB(0, 200, 0) or Color3.fromRGB(200, 0, 0)
+                end)
+            elseif tabName == "Shop" then
+                local Button1 = Instance.new("TextButton")
+                Button1.Parent = ContentFrame
+                Button1.Size = UDim2.new(0, 150, 0, 50)
+                Button1.Position = UDim2.new(0.5, -75, 0.5, -25)
+                Button1.BackgroundColor3 = Color3.fromRGB(200, 0, 0)
+                Button1.TextColor3 = Color3.fromRGB(255, 255, 255)
+                Button1.Text = "Shop Button 1"
+                Button1.TextSize = 20
+
+                Button1.MouseButton1Click:Connect(function()
+                    ButtonStates["Shop"] = not ButtonStates["Shop"]
+                    Button1.BackgroundColor3 = ButtonStates["Shop"] and Color3.fromRGB(0, 200, 0) or Color3.fromRGB(200, 0, 0)
+                end)
+            elseif tabName == "Misc" then
+                local Button1 = Instance.new("TextButton")
+                Button1.Parent = ContentFrame
+                Button1.Size = UDim2.new(0, 150, 0, 50)
+                Button1.Position = UDim2.new(0.5, -75, 0.5, -25)
+                Button1.BackgroundColor3 = Color3.fromRGB(200, 0, 0)
+                Button1.TextColor3 = Color3.fromRGB(255, 255, 255)
+                Button1.Text = "Misc Button 1"
+                Button1.TextSize = 20
+
+                Button1.MouseButton1Click:Connect(function()
+                    ButtonStates["Misc"] = not ButtonStates["Misc"]
+                    Button1.BackgroundColor3 = ButtonStates["Misc"] and Color3.fromRGB(0, 200, 0) or Color3.fromRGB(200, 0, 0)
+                end)
+            end
         end)
     end
 
     -- Create Close Button
     CloseButton.Name = "CloseButton"
     CloseButton.Parent = MainFrame
-    CloseButton.Size = UDim2.new(0, 30, 0, 30)
-    CloseButton.Position = UDim2.new(1, -40, 0, 10)
-    CloseButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+    CloseButton.BackgroundColor3 = Color3.fromRGB(200, 0, 0)
+    CloseButton.Size = UDim2.new(0, 100, 0, 50)
+    CloseButton.Position = UDim2.new(1, -120, 0, 10)
+    CloseButton.Text = "Close"
     CloseButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-    CloseButton.Text = "X"
     CloseButton.TextSize = 20
+
     CloseButton.MouseButton1Click:Connect(function()
+        MainFrame.Visible = false
+        Loader.Visible = true
+        LoadText.Text = "Loading..."
+        animateText(LoadText, "Goodbye!", 1, 28)
+        wait(1)
         ScreenGui:Destroy()
     end)
-
-    -- Function to create toggle buttons with sliding circle
-    local function createToggleButton(parent, buttonName, positionOffset)
-        local ToggleButton = Instance.new("TextButton")
-        ToggleButton.Name = buttonName .. "Toggle"
-        ToggleButton.Parent = parent
-        ToggleButton.Size = UDim2.new(0, 150, 0, 50)
-        ToggleButton.Position = UDim2.new(0.5, -75, positionOffset, -25)
-        ToggleButton.BackgroundColor3 = Color3.fromRGB(200, 0, 0)
-        ToggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-        ToggleButton.Text = buttonName
-        ToggleButton.TextSize = 20
-
-        local UICornerToggle = Instance.new("UICorner")
-        UICornerToggle.CornerRadius = UDim.new(0, 10)
-        UICornerToggle.Parent = ToggleButton
-
-        local toggleState = false  -- false = off, true = on
-        local toggleCircle = Instance.new("Frame")
-        toggleCircle.Size = UDim2.new(0, 30, 0, 30)
-        toggleCircle.Position = UDim2.new(0, 10, 0.5, -15)
-        toggleCircle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-        toggleCircle.BorderSizePixel = 0
-        toggleCircle.Parent = ToggleButton
-
-        local function toggleAnimation()
-            toggleState = not toggleState
-            if toggleState then
-                toggleCircle:TweenPosition(UDim2.new(0, 110, 0.5, -15), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.25, true)
-                toggleCircle.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
-            else
-                toggleCircle:TweenPosition(UDim2.new(0, 10, 0.5, -15), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.25, true)
-                toggleCircle.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
-            end
-        end
-        
-        ToggleButton.MouseButton1Click:Connect(toggleAnimation)
-    end
-
-    -- Create toggle buttons for each tab
-    createToggleButton(MainFrame, "Button 1", 0.1)
-    createToggleButton(MainFrame, "Button 2", 0.2)
 end
 
--- Animation sequence
-coroutine.wrap(function()
-    animateText(LoadText, "Loading...", 1.5, 36)
-    animateText(LoadText, "Loaded", 1.2, 28)
-    animateText(LoadText, "Welcome " .. game.Players.LocalPlayer.Name, 1.5, 24)
-    
-    -- After animations, remove loader and show main GUI
-    wait(0.5)
-    Loader:TweenSizeAndPosition(
-        UDim2.new(0, 0, 0, 0),
-        UDim2.new(0.5, 0, 0.5, 0),
-        Enum.EasingDirection.Out,
-        Enum.EasingStyle.Quad,
-        0.5,
-        true,
-        function()
-            Loader.Visible = false
-            displayMainGui()
-        end
-    )
-end)()
---nonewasherw!=!=!
+-- Start loading animation
+animateText(LoadText, "Loading complete!", 1, 28)
+
+wait(2) -- Wait for a while to see the loading text
+Loader.Visible = false
+displayMainGui()
+--maybeworking?
