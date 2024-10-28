@@ -85,16 +85,18 @@ for i, buttonName in ipairs(ButtonNames) do
         CheckBox.Text = "" -- Empty until toggled
         CheckBox.TextColor3 = Color3.new(0, 1, 0) -- Green checkmark when toggled
         CheckBox.BackgroundColor3 = backgroundColor
-        CheckBox.Size = UDim2.new(0.1, 0, 0.1, 0) -- Larger size for visibility
+        CheckBox.Size = UDim2.new(0.1, 0, 0.1, 0) -- Same size as before for alignment
         CheckBox.Position = UDim2.new(0.6, 5, (j - 1) * 0.2 + 0.1, 0)
         CheckBox.BorderSizePixel = 1
+        CheckBox.Font = Enum.Font.SourceSansBold -- Bold font for visibility
+        CheckBox.TextScaled = true -- Scales text to fit inside the box
         
         -- Toggle functionality
         local toggled = false
         ToggleButton.MouseButton1Click:Connect(function()
             toggled = not toggled
             if toggled then
-                CheckBox.Text = "✓" -- Show checkmark
+                CheckBox.Text = "✓" -- Show larger checkmark
             else
                 CheckBox.Text = ""   -- Remove checkmark
             end
@@ -104,4 +106,4 @@ end
 
 -- Default to show the first tab
 Tabs[ButtonNames[1]].Visible = true
---Tester123
+-- Test sigma!
