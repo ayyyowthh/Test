@@ -12,7 +12,7 @@ ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 -- Theme Colors
 local backgroundColor = Color3.fromRGB(230, 200, 255) -- Light purple for the background
 local buttonColor = Color3.fromRGB(210, 180, 230)     -- Slightly darker purple for the buttons
-local textColor = Color3.fromRGB(90, 0, 120)          -- Dark purple for text to ensure readability
+local textColor = Color3.fromRGB(90, 0, 120)          -- Dark purple for text
 
 -- Main Frame Setup
 MainFrame.Parent = ScreenGui
@@ -46,8 +46,8 @@ for i, buttonName in ipairs(ButtonNames) do
     TabButton.Parent = TabContainer
     TabButton.Text = buttonName
     TabButton.TextColor3 = textColor
-    TabButton.Size = UDim2.new(1, 0, 0.2, 0)
-    TabButton.Position = UDim2.new(0, 0, (i - 1) * 0.2, 0)
+    TabButton.Size = UDim2.new(1, 0, 0.15, 0) -- Reduced height
+    TabButton.Position = UDim2.new(0, 0, (i - 1) * 0.15, 0)
     TabButton.BackgroundColor3 = buttonColor
     TabButton.BorderSizePixel = 0
     TabButton.MouseButton1Click:Connect(function()
@@ -75,7 +75,7 @@ for i, buttonName in ipairs(ButtonNames) do
         ToggleButton.Parent = TabContent
         ToggleButton.Text = "Toggle " .. j
         ToggleButton.TextColor3 = textColor
-        ToggleButton.Size = UDim2.new(0.6, 0, 0.15, 0)
+        ToggleButton.Size = UDim2.new(0.5, 0, 0.1, 0) -- Reduced button size
         ToggleButton.Position = UDim2.new(0.05, 0, (j - 1) * 0.2 + 0.1, 0)
         ToggleButton.BackgroundColor3 = buttonColor
         ToggleButton.BorderSizePixel = 0
@@ -85,9 +85,9 @@ for i, buttonName in ipairs(ButtonNames) do
         CheckBox.Text = "" -- Empty until toggled
         CheckBox.TextColor3 = Color3.new(0, 1, 0) -- Green checkmark when toggled
         CheckBox.BackgroundColor3 = backgroundColor
-        CheckBox.Size = UDim2.new(0.1, 0, 0.15, 0)
-        CheckBox.Position = UDim2.new(0.7, 0, (j - 1) * 0.2 + 0.1, 0)
-        CheckBox.BorderSizePixel = 0
+        CheckBox.Size = UDim2.new(0.1, 0, 0.1, 0) -- Larger size for visibility
+        CheckBox.Position = UDim2.new(0.6, 5, (j - 1) * 0.2 + 0.1, 0)
+        CheckBox.BorderSizePixel = 1
         
         -- Toggle functionality
         local toggled = false
