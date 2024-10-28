@@ -98,17 +98,19 @@ local function createMainGUI()
     TabContainer.Position = UDim2.new(0, 0, 0, 30)
 
     -- Create tabs
-    for _, tabName in ipairs({"Player", "Aimlock", "Teleports", "Shop", "Misc"}) do
+    local tabNames = {"Player", "Aimlock", "Teleports", "Shop", "Misc"}
+    for i, tabName in ipairs(tabNames) do
         local tabButton = Instance.new("TextButton")
         tabButton.Name = tabName
         tabButton.Size = UDim2.new(0, 80, 0, 30)
-        tabButton.Position = UDim2.new(0, 80 * (_ - 1), 0, 0)
+        tabButton.Position = UDim2.new(0, 80 * (i - 1), 0, 0)
         tabButton.BackgroundColor3 = Color3.fromRGB(200, 0, 0)
         tabButton.Text = tabName
         tabButton.TextColor3 = Color3.fromRGB(255, 255, 255)
         tabButton.Parent = MainFrame
 
         tabButton.MouseButton1Click:Connect(function()
+            -- Hide all content frames first
             for _, button in ipairs(TabContainer:GetChildren()) do
                 if button:IsA("Frame") then
                     button.Visible = false
@@ -130,7 +132,7 @@ local function createMainGUI()
     end
 
     -- Initialize first tab
-    MainFrame:FindFirstChild("Player").MouseButton1Click:Fire()
+    tabNames[1].MouseButton1Click:Fire()
 end
 
 -- Animate loader text
@@ -175,4 +177,7 @@ UIS.InputChanged:Connect(function(input)
         MainFrame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
     end
 end)
---rizz!!
+
+-- Finally, let's ensure that the GUI is visible when the script is executed
+ScreenGui.Parent = game.CoreGui
+--none1
