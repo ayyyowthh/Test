@@ -58,8 +58,8 @@ local function displayMainGui()
     MainFrame.Parent = ScreenGui
     MainFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
     MainFrame.BackgroundTransparency = 0.3
-    MainFrame.Size = UDim2.new(0, 400, 0, 300)
-    MainFrame.Position = UDim2.new(0.5, -200, 0.5, -150)
+    MainFrame.Size = UDim2.new(0, 600, 0, 400) -- Increased size
+    MainFrame.Position = UDim2.new(0.5, -300, 0.5, -200)
     MainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
     MainFrame.BorderSizePixel = 0
     MainFrame.Visible = true
@@ -74,15 +74,16 @@ local function displayMainGui()
     TabContainer.Parent = MainFrame
     TabContainer.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
     TabContainer.BackgroundTransparency = 0.5
-    TabContainer.Size = UDim2.new(0, 80, 1, 0)
+    TabContainer.Size = UDim2.new(0, 100, 1, 0) -- Sufficient width for tabs
     TabContainer.Position = UDim2.new(0, 0, 0, 0)
 
     -- Create tabs
-    for _, tabName in ipairs(Tabs) do
+    for i, tabName in ipairs(Tabs) do
         local TabButton = Instance.new("TextButton")
         TabButton.Name = tabName .. "Button"
         TabButton.Parent = TabContainer
         TabButton.Size = UDim2.new(1, 0, 0, 50)
+        TabButton.Position = UDim2.new(0, 0, (i - 1) * 0.2, 0) -- Space out the tabs
         TabButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
         TabButton.TextColor3 = Color3.fromRGB(255, 255, 255)
         TabButton.Text = tabName
@@ -181,4 +182,4 @@ coroutine.wrap(function()
         end
     )
 end)()
---iwashere!!
+--Loserwasgere
